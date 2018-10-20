@@ -1,0 +1,123 @@
+<html>
+    <head>
+        <style>
+            body{
+                background-color: #000;
+            }
+        #canvas{
+            width:2000px;
+            height: auto;
+        }
+        </style>
+        <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script src="scripts/module.js"></script>
+  <script>
+    //@see http://blog.nipx.jp/archives/3236
+      $(document).ready(function(e){
+        var ctx = $('#canvas')[0].getContext('2d');
+            ctx.strokeStyle="#000000";
+            ctx.lineWidth=2;
+            ctx.fillStyle="#000000";
+      var font;
+
+
+      function drawBoundingBox(bounds,h){
+          ctx.beginPath();
+          ctx.moveTo(bounds.xMin,-bounds.yMin+h);
+          ctx.lineTo(bounds.xMax,-bounds.yMin+h);
+          ctx.lineTo(bounds.xMax,-bounds.yMax+h);
+          ctx.lineTo(bounds.xMin,-bounds.yMax+h);
+          ctx.lineTo(bounds.xMin,-bounds.yMin+h);
+          ctx.closePath();
+          ctx.stroke();
+      }
+
+      function drawControlPoint(points,bounds,h){
+        
+          for(var i = 0;i<points.length;i++){
+            ctx.beginPath();
+            ctx.arc(points[i].x,-points[i].y+h,3,0,Math.PI*2);
+            ctx.closePath();
+            ctx.stroke();
+          }
+         
+      }
+    $.ajax({
+        url:"http://localhost:3000/font/",
+        method:"GET",
+        dataType:"json",
+        success:function(data){
+            
+            for(var fontIdx = 0;fontIdx < data.length;fontIdx++){
+                
+                var font = data[fontIdx];               
+               
+                
+                for (var index = 0; index < 1; index++) {
+                    var g = new fcklib.Glyph(font)
+                    g.init();
+                    // g.initRandom(20)
+                    g.setOpacity(0.04);
+                    g.strokeStyle = "#ffffff"
+                    g.draw(ctx)
+                }
+ 
+                
+            }
+            var path = g.getAllPath();
+            var pathAnimations = [];
+           
+
+            for(var i =0;i<path.length;i++){
+                var pathLength = path[i].getLength();
+                var numAnim = Math.floor(pathLength/10);
+                for(j = 0;j<numAnim;j++){
+                    var animation = new fcklib.PathAnimation(path[i]);
+                    animation.ratio = Math.random();
+                    animation.setVelocity(Math.random()*10);
+                    pathAnimations.push(
+                        animation
+                    )
+                }
+            }
+            var randomSeed = 20;
+
+            function loop(){
+               
+                ctx.clearRect(0,0,2000,2000);
+                // ctx.fillStyle = "rgba(0,0,0,0.1)";
+                // ctx.rect(0,0,2000,2000);
+  
+                for(var i=0;i<pathAnimations.length;i++){
+                    ctx.fillStyle = "rgba(255,255,255,0.5)";
+                    var pos = pathAnimations[i].updatePosition();
+                    ctx.beginPath();
+                    ctx.arc(pos.x+Math.random()*randomSeed-randomSeed/2,pos.y+Math.random()*randomSeed-randomSeed/2,2,0,Math.PI*2);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                requestAnimationFrame(loop);
+            }
+           loop();
+            
+            $(window).on('mousemove',function(e){
+                randomSeed = e.pageX/50;
+            })
+           
+            
+        },
+        error:function(e){
+            console.log(e);
+        }
+    })
+      })
+       
+  </script>
+    </head>
+    <body>
+        <canvas id="canvas" width="3000" height="1000"></canvas>
+    </body>
+</html>

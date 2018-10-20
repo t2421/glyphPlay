@@ -1,0 +1,145 @@
+<html>
+    <head>
+        <style>
+        #canvas{
+            width:1000px;
+            height: auto;
+        }
+        </style>
+        <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script src="scripts/module.js"></script>
+  <script>
+      
+    //@see http://blog.nipx.jp/archives/3236
+      $(document).ready(function(e){
+          var canvas = $('#canvas')[0];
+        var ctx = $('#canvas')[0].getContext('2d');
+        ctx.lineWidth=1;
+        ctx.strokeStyle = "rgba(0,0,0,1)";
+        var path = new fcklib.Path();
+        var particle = {x:0,y:0};
+        var vertices = [
+            new fcklib.Vector2D(0,0),
+            new fcklib.Vector2D(1000,0),
+            new fcklib.Vector2D(1000,1000),
+            new fcklib.Vector2D(0,1000)
+        ]
+        var segments = [
+            new fcklib.MoveToSegment(vertices[0],[vertices[0]]),
+            new fcklib.LineSegment(vertices[0],[vertices[1]]),
+            new fcklib.LineSegment(vertices[1],[vertices[2]]),
+            new fcklib.LineSegment(vertices[2],[vertices[3]]),
+            new fcklib.LineSegment(vertices[3],[vertices[0]])
+        ]
+        var subdiv = segments[4].split(0.5);
+        segments[4] = subdiv[0];
+        segments[5] = subdiv[1];
+        
+        path.add(segments[0]);
+        path.add(segments[1]);
+        path.add(segments[2]);
+        path.add(segments[3]);
+        path.add(segments[4]);
+        path.add(segments[5]);
+        path.updateLength();
+        
+
+        particle.x = segments[0].points[0].x;
+        particle.y = segments[0].points[0].y;
+        
+        var startPoint = new fcklib.Vector2D(7.5, 356.0);
+
+        var points =[new fcklib.Vector2D(22.0, 353.5), new fcklib.Vector2D(41.5, 152.5), new fcklib.Vector2D(1260.5, 352.5)];
+        var segment2 = new fcklib.CubicBezierSegment(startPoint,points);
+        
+        var path2 = new fcklib.Path();
+        path2.add(segment2);
+
+        function loop(){
+            updatePosition3();
+            ctx.clearRect(0,0,2000,2000);
+            ctx.beginPath();
+            path.draw(ctx);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.arc(particle.x,particle.y,10,0,Math.PI*2);
+            ctx.closePath();
+            ctx.fill();
+            ctx.beginPath();
+            path2.draw(ctx);
+            ctx.closePath();
+            ctx.stroke();
+            requestAnimationFrame(loop);
+        }
+
+        var indexCount = 0;
+        function updateCount(){
+            // console.log(indexCount)
+            indexCount++;
+            if(indexCount >= segments.length){
+                indexCount = 0;
+            }
+        }
+
+        //targetベース
+        function updatePosition(){
+            var targetX = segments[indexCount].points[0].x;
+            var targetY = segments[indexCount].points[0].y;
+            
+            particle.x = particle.x + (targetX - particle.x)*0.1;
+            particle.y = particle.y + (targetY - particle.y)*0.1;
+
+            if(Math.abs(targetX-particle.x) < 0.1 && Math.abs(targetY-particle.y) < 0.1){
+                updateCount();
+            }
+        }
+        //方向ベース
+        function updatePosition2(){
+            var unit = 5;
+            var targetX = segments[indexCount].points[0].x;
+            var targetY = segments[indexCount].points[0].y;
+            var diffX = (targetX-particle.x);
+            var diffY = (targetY-particle.y);
+            var dist = Math.sqrt(diffX*diffX+diffY*diffY);
+            
+            if(dist < unit){
+                updateCount();
+                return;
+            }
+            var normX = diffX/dist;
+            var normY = diffY/dist;
+            var vel = Math.max(unit,dist*0.1);
+            particle.x += normX*vel;
+            particle.y += normY*vel;
+            
+        }
+        
+        //各セグメントの比率ベース
+        var addT = 0.01;
+        var currentT = 0;
+        function updatePosition3(){
+            currentT += addT;
+            if(currentT >= 1){
+                currentT = 0;
+                return;
+            }
+            var pos =  path2.getPointAt(currentT);
+
+            particle.x = pos.x;
+            particle.y = pos.y;
+
+        }
+
+        loop();
+      });
+       
+  </script>
+    </head>
+    <body>
+        <canvas id="canvas" width="2000" height="1000"></canvas>
+    </body>
+</html>

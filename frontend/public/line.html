@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <style>
+        #canvas{
+            width:1000px;
+            height: auto;
+        }
+        </style>
+        <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script src="scripts/module.js"></script>
+  <script>
+    //@see http://blog.nipx.jp/archives/3236
+      $(document).ready(function(e){
+        var ctx = $('#canvas')[0].getContext('2d');
+            ctx.strokeStyle="#000000";
+            ctx.lineWidth=1;
+            ctx.fillStyle="#000000";
+        var startPoint = [0,0];
+        var points = [100,100];
+        var line = new fcklib.LineSegment(startPoint,points);
+        // ctx.beginPath();
+        // ctx.moveTo(0,0)
+        line.draw(ctx);
+        // ctx.closePath();
+        // console.log(line)
+      });
+       
+  </script>
+    </head>
+    <body>
+        <canvas id="canvas" width="2000" height="1000"></canvas>
+    </body>
+</html>

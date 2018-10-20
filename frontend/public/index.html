@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <style>
+            body{
+                background-color: #000;
+            }
+        #canvas{
+            width:2000px;
+            height: auto;
+        }
+        </style>
+        <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script src="scripts/module.js"></script>
+  <script>
+      $(document).ready(function(e){
+          var main = new fcklib.MainParticleForce();
+          main.start();
+      })
+       
+  </script>
+    </head>
+    <body>
+        <canvas id="canvas" width="3000" height="1000"></canvas>
+    </body>
+</html>
