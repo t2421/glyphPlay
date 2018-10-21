@@ -36,7 +36,6 @@ class PathAnimationForce{
 
         p0.x += p0.vx;
         p0.y += p0.vy;
-        
        
         return p0;
     }
