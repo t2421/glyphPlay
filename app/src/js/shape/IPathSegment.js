@@ -1,13 +1,21 @@
-
+import Vector2D from '../geom/Vector2D';
 class IPathSegment {
     constructor() {
-        this.points;
-        this.startPoints;
+        
     }
     getBounds(){}
     getPointAt(){}
     getLength(){}
     draw(ctx){
+        
+    }
+    addRandom(seed){
+        this.startPoint = new Vector2D(this.startPoint.x+Math.random()*seed - seed/2,this.startPoint.y+Math.random()*seed - seed/2);
+
+        for(var i = 0;i<this.points.length;i++){
+            var point = this.points[i];
+            this.points[i] = new Vector2D(point.x +Math.random()*seed - seed/2,point.y +Math.random()*seed - seed/2);
+        }
         
     }
     drawRandom(){}

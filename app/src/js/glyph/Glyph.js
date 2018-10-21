@@ -29,16 +29,9 @@ class Glyph{
     }
 
     initRandom(seed=20){
-        var fontInfo = this.fontInfo
-        for(var idx in fontInfo.path){
-            var lineInfo = fontInfo.path[idx];
-            
-            for(var i = 0;i<lineInfo[1].length;i++){
-                for(var j = 0;j<lineInfo[1][i].length; j++){
-                    lineInfo[1][i][j] = lineInfo[1][i][j] + Math.random()*seed-(seed/2)
-                }
-            }
-        }
+        this.allPath.map(path => {
+            path.addRandom(seed);
+        });
        
     }
 

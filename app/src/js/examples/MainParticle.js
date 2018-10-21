@@ -52,13 +52,13 @@ class MainParticle extends Main{
         const randomSeedX = this._randomSeedX;
         const randomSeedY = this._randomSeedY;
         const pathAnimations = this._pathAnimations;
-
+        
         // ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
         for(var i=0;i<pathAnimations.length;i++){
-            ctx.fillStyle = "rgba(255,255,255,0.1)";
+            ctx.fillStyle = "rgba(255,255,255,0.05)";
             var pos = pathAnimations[i].updatePosition();
             ctx.beginPath();
-            ctx.arc(pos.x+Math.random()*randomSeedX-randomSeedX/2,pos.y+Math.random()*randomSeedY-randomSeedY/2,2,0,Math.PI*2);
+            ctx.arc(pos.x+Math.random()*randomSeedX-randomSeedX/2,pos.y+Math.random()*randomSeedY-randomSeedY/2,2+Math.random()*2,0,Math.PI*2);
             ctx.closePath();
             ctx.fill();
         }

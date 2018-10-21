@@ -70,7 +70,11 @@ class Path {
     getLength(){
         return this.length;
     }
-
+    addRandom(seed=20){
+        this.segments.map(segment => {
+            segment.addRandom(seed);
+        });
+    }
     isFill(){
         var S	= 0;
         let len = this.segments.length;
