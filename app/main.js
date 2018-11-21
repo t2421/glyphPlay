@@ -10,7 +10,7 @@ const commandMap = {
 
 const getPath =  () => {
     var font = opentype.loadSync('fonts/NotoSerifCJKjp-Medium.otf');
-    var path = font.getPath('文字の構造', 0, 500, 500);
+    var path = font.getPath('文字', 0, 500, 500);
     var commands = path.commands;
     var allPath = [];
     commands.map((element)=>{
